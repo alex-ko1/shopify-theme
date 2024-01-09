@@ -1,0 +1,13 @@
+body {
+    font-family: Helvetica Neue, serif;
+}
+
+section {
+    @apply uppercase px-5 absolute h-screen text-black gap-9 text-xs flex pt-4 pb-5 w-full flex-col
+}
+
+@layer {
+    .border-b-dashed {
+        border-bottom-style: dashed !important;
+    }
+}

@@ -1,0 +1,3 @@
+<template>
+  Collection Item
+</template>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+    {% if settings.favicon %}
+      <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">
+    {% endif %}
+
+    <title>{{ page_title | escape }}</title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    <!-- header hook for Shopify plugins -->
+    {%- liquid
+      render 'vite-tag' with 'main.css'
+      render 'vite-tag' with 'main.js'
+    -%}
+
+    {{ content_for_header }}
+  </head>
+
+  <body>
+      <script>
+        window.currencies = [{% for currency in shop.enabled_currencies %}{isoCode:'{{ currency.iso_code }}', symbol:'{{ currency.symbol }}'},{% endfor %}];
+        window.locales = [{% for locale in shop.published_locales %}{isoCode:'{{ locale.iso_code }}', endonymName:'{{ locale.endonym_name }}',name:'{{ locale.name }}'},{% endfor %}];
+        window.cartCount = '{{ cart.item_count }}';
+        window.menus = {
+          'header-menu': [{% for link in linklists['header-menu'].links %}{title:'{{ link.handle }}', url:'{{ link.url }}'},{% endfor %}],
+          'side-menu-1': [{% for link in linklists['side-menu-1'].links %}{title:'{{ link.handle }}', url:'{{ link.url }}'},{% endfor %}],
+          'side-menu-2': [{% for link in linklists['side-menu-2'].links %}{title:'{{ link.handle }}', url:'{{ link.url }}'},{% endfor %}]
+        };
+        {% if request.path contains '/pages/about-us' %}
+          window.title = `{{ pages['about-us'].title }}`
+        {% endif %}
+      </script>
+    <div {% unless request.page_type == 'captcha' %}id="app"{% endunless %}>
+      {% comment %}{% section 'header' %}{% endcomment %}
+
+      <main id="main" role="main">
+        {% comment %}{{ content_for_layout }}{% endcomment %}
+        <app-header></app-header>
+        <router-view></router-view>
+        <app-footer></app-footer>
+      </main>
+      {% comment %}<my-component></my-component>{% endcomment %}
+
+
+      {% comment %}<main-page></main-page>{% endcomment %}
+      {% comment %}<app-footer></app-footer>{% endcomment %}
+      {% comment %}{% section 'footer' %}{% endcomment %}
+    </div>
+
+  </body>
+</html>
